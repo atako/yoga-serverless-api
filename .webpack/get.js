@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -153,7 +153,9 @@ function buildResponse(statusCode, body) {
 }
 
 /***/ }),
-/* 6 */
+/* 6 */,
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -174,36 +176,41 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 var main = exports.main = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(event, context, callback) {
-    var data, params, result;
+    var params, result;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            data = JSON.parse(event.body);
             params = {
               TableName: 'yoga-dev',
-              Item: {
-                asanaId: _uuid2.default.v1(),
-                title: data.title,
-                duration: data.duration,
-                description: data.description,
-                createdAt: new Date().getTime()
+              // 'Key' defines the partition key and sort key of the item to be retrieved
+              // - 'userId': Identity Pool identity id of the authenticated user
+              // - 'noteId': path parameter
+              Key: {
+                asanaId: event.pathParameters.id
               }
             };
-            _context.prev = 2;
+            _context.prev = 1;
+
+            console.log(params);
             _context.next = 5;
-            return dynamoDbLib.call('put', params);
+            return dynamoDbLib.call('get', params);
 
           case 5:
             result = _context.sent;
 
-            callback(null, (0, _responseLib.success)(params.Item));
+            if (result.Item) {
+              // Return the retrieved item
+              callback(null, (0, _responseLib.success)(result.Item));
+            } else {
+              callback(null, (0, _responseLib.failure)({ status: false, error: 'Item not found.' }));
+            }
             _context.next = 12;
             break;
 
           case 9:
             _context.prev = 9;
-            _context.t0 = _context['catch'](2);
+            _context.t0 = _context['catch'](1);
 
             callback(null, (0, _responseLib.failure)({ status: false }));
 
@@ -212,17 +219,13 @@ var main = exports.main = function () {
             return _context.stop();
         }
       }
-    }, _callee, this, [[2, 9]]);
+    }, _callee, this, [[1, 9]]);
   }));
 
   return function main(_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
 }();
-
-var _uuid = __webpack_require__(7);
-
-var _uuid2 = _interopRequireDefault(_uuid);
 
 var _dynamodbLib = __webpack_require__(3);
 
@@ -234,11 +237,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = require("uuid");
+;
 
 /***/ })
 /******/ ])));
