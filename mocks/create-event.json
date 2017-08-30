@@ -1,0 +1,8 @@
+{
+  "body": "{\"title\":\"Name of the asana\",\"duration\":\"30-60 sec\",\"description\":\"Test asana description\"}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "guest user"
+    }
+  }
+}
